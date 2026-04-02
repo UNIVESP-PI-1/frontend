@@ -1,8 +1,8 @@
 import { http } from "./http";
 
 export const loginRequest = (email, password) => {
-    return httpAuth.post('/login_check', {
-        username: email,
+    return http.post('/auth/login', {
+        email: email,
         password: password
     });
 };

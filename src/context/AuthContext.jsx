@@ -9,41 +9,28 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState(localStorage.getItem('token') || null);
   const [loading, setLoading] = useState(true);
   
-  const refreshProfile = useCallback(async () => {
-    try {
-      const { data } = await http.get('/me');
-      setUser(data);
-      return data;
-    } catch (error) {
-      logout();
-    }
-  }, []);
-
   useEffect(() => {
-    const initializeAuth = async () => {
-      const storedToken = localStorage.getItem('token');
-      if (storedToken) {
-        await refreshProfile();
-      }
-      setLoading(false);
-    };
-
-    initializeAuth();
-  }, [refreshProfile]);
-
+    setLoading(false);
+  }, []);
+  
   const login = async (email, password) => {
-    const { data } = await loginRequest(email, password);
+    try {
+      const { data } = await loginRequest(email, password);
 
-    setToken(data.token);
-    localStorage.setItem('token', data.token);
-
-    await refreshProfile();
+      setToken(data.access_token);
+      localStorage.setItem('token', data.access_token);
+      localStorage.setItem('refresh_token', data.reflesh_token);
+    } catch (error) {
+      console.error('Erro ao fazer login:', error);
+      throw error;
+    }
   };
 
   const logout = () => {
     setToken(null);
     setUser(null);
     localStorage.removeItem('token');
+    localStorage.removeItem('refresh_token');
   };
 
   return (
@@ -53,7 +40,6 @@ export function AuthProvider({ children }) {
       login,
       logout,
       loading,
-      refreshProfile
     }}>
       {children}
     </AuthContext.Provider>
