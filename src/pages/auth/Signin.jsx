@@ -31,7 +31,7 @@ export default function Signin() {
       await login(email, password);
       navigate('/home', { replace: true });
     } catch (err) {
-      setError(err.response?.status === 401 ? 'Credenciais administrativas inválidas.' : 'Falha na comunicação com o servidor.');
+      setError(err.response?.status === 401 ? 'Credenciais inválidas.' : 'Falha na comunicação com o servidor.');
     } finally {
       setLoading(false);
     }

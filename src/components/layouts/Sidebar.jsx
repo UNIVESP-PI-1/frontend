@@ -6,14 +6,11 @@ import {
   LogOut,
   Users,
   Settings,
-  Church,
+  Package,
   ChevronRight,
   Menu,
   X,
-  Building2,
-  Layers,
-  HandPlatter,
-  Files,
+  LayoutGrid,
 } from 'lucide-react';
 
 export default function Sidebar() {
@@ -84,11 +81,9 @@ export default function Sidebar() {
         <nav className="flex-1 p-3 space-y-2 mt-4 overflow-y-auto">
           <SidebarItem to="/home" icon={<LayoutDashboard size={22} />} label="Home" expanded={expanded} isMobile={isMobileOpen} />
 
-          <SidebarItem to="/account" icon={<Building2 size={22} />} label="Home" expanded={expanded} isMobile={isMobileOpen} />
+          <SidebarItem to="/categories" icon={<LayoutGrid size={22} />} label="Home" expanded={expanded} isMobile={isMobileOpen} />
 
-          <SidebarItem to="/church" icon={<Church size={22} />} label="Igrejas" expanded={expanded} isMobile={isMobileOpen} />
-
-          <SidebarItem to="/members" icon={<Users size={22} />} label="Membros" expanded={expanded} isMobile={isMobileOpen} />
+          <SidebarItem to="/products" icon={<Package size={22} />} label="Igrejas" expanded={expanded} isMobile={isMobileOpen} />
           
           {/* <SidebarItem to="/settings" icon={<Settings size={22} />} label="Configurações" expanded={expanded} isMobile={isMobileOpen} /> */}
         </nav>
