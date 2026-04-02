@@ -33,9 +33,16 @@ Siga os passos abaixo para rodar a aplicação localmente:
 Abra o terminal na pasta raiz do projeto e execute:
 ```bash
 npm install
+```
+### 2. Configurar variáveis de ambiente
+Clone o arquivo de exemplo (Linux):
+```bash
+cp .env.example .env.development.local
+```
+### 3. Rode o projeto
+Abra o terminal na pasta raiz do projeto e execute:
+```bash
 npm run dev
 ```
-
-### 2. Acessar a aplicação
-
+### 4. Acessar a aplicação
 O Vite informará uma URL no terminal (geralmente http://localhost:5173). Basta clicar no link ou colá-lo no seu navegador.
