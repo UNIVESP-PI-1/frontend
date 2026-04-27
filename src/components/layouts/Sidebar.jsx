@@ -6,6 +6,7 @@ import {
   LogOut,
   Users,
   Settings,
+  Layers,
   Package,
   ChevronRight,
   Menu,
@@ -81,9 +82,9 @@ export default function Sidebar() {
         <nav className="flex-1 p-3 space-y-2 mt-4 overflow-y-auto">
           <SidebarItem to="/home" icon={<LayoutDashboard size={22} />} label="Home" expanded={expanded} isMobile={isMobileOpen} />
 
-          <SidebarItem to="/categories" icon={<LayoutGrid size={22} />} label="Home" expanded={expanded} isMobile={isMobileOpen} />
+          <SidebarItem to="/categories" icon={<Layers size={22} />} label="Categorias" expanded={expanded} isMobile={isMobileOpen} />
 
-          <SidebarItem to="/products" icon={<Package size={22} />} label="Igrejas" expanded={expanded} isMobile={isMobileOpen} />
+          <SidebarItem to="/products" icon={<Package size={22} />} label="Produtos" expanded={expanded} isMobile={isMobileOpen} />
           
           {/* <SidebarItem to="/settings" icon={<Settings size={22} />} label="Configurações" expanded={expanded} isMobile={isMobileOpen} /> */}
         </nav>
