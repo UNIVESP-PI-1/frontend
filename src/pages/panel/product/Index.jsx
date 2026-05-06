@@ -18,6 +18,13 @@ export default function ProductIndex() {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [isDeleting, setIsDeleting] = useState(false);
 
+    const formatCurrency = (value) => {
+        return new Intl.NumberFormat('pt-BR', {
+            style: 'currency',
+            currency: 'BRL',
+        }).format(value / 100);
+    };
+
     const fetchProducts = async () => {
         setLoading(true);
         try {
@@ -70,7 +77,7 @@ export default function ProductIndex() {
                     </div>
                 </div>
                 <div className="text-right">
-                    <p className="text-sm font-bold text-green-600">R$ {(product.sale_price / 100).toFixed(2)}</p>
+                    <p className="text-sm font-bold text-green-600">{formatCurrency(product.sale_price)}</p>
                 </div>
             </div>
 
@@ -102,7 +109,7 @@ export default function ProductIndex() {
         },
         {
             header: 'Preço Venda',
-            render: (p) => <span className="font-semibold text-gray-700">R$ {(p.sale_price / 100).toFixed(2)}</span>
+            render: (p) => <span className="font-semibold text-gray-700">{formatCurrency(p.sale_price)}</span>
         },
         {
             header: 'Código de Barras',
