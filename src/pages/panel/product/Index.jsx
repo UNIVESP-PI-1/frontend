@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Package, Plus, Search, Edit, Trash2, Loader2, Tag, Barcode, DollarSign } from 'lucide-react';
+import { Package, Plus, Search, Edit, Trash2, Loader2 } from 'lucide-react';
 import Button from '../../../components/ui/Button';
 import DataTable from '../../../components/ui/DataTable';
 import ConfirmModal from '../../../components/ui/ConfirmModal';

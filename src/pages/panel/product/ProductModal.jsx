@@ -85,7 +85,6 @@ export default function ProductModal({ isOpen, onClose, onSuccess, product }) {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
-            {/* Alterado de max-w-2xl para max-w-md para ficar mais estreito */}
             <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl my-8 overflow-hidden">
 
                 {/* Header */}
@@ -106,7 +105,7 @@ export default function ProductModal({ isOpen, onClose, onSuccess, product }) {
                 <form onSubmit={handleSubmit} className="p-6">
                     <div className="grid grid-cols-2 gap-4">
 
-                        {/* Nome - Ocupa 2 colunas */}
+                        {/* Nome */}
                         <div className="col-span-2">
                             <label className="block text-[11px] font-black uppercase text-gray-400 mb-1.5 ml-1">Nome do Produto</label>
                             <input
@@ -117,7 +116,7 @@ export default function ProductModal({ isOpen, onClose, onSuccess, product }) {
                             />
                         </div>
 
-                        {/* SKU e Barcode - Lado a lado */}
+                        {/* SKU e Barcode */}
                         <div className="col-span-1">
                             <label className="block text-[11px] font-black uppercase text-gray-400 mb-1.5 ml-1">SKU</label>
                             <input
@@ -136,7 +135,7 @@ export default function ProductModal({ isOpen, onClose, onSuccess, product }) {
                             />
                         </div>
 
-                        {/* Categoria - Ocupa 2 colunas */}
+                        {/* Categoria */}
                         <div className="col-span-2">
                             <label className="block text-[11px] font-black uppercase text-gray-400 mb-1.5 ml-1">Categoria</label>
                             <select
@@ -152,7 +151,7 @@ export default function ProductModal({ isOpen, onClose, onSuccess, product }) {
                             </select>
                         </div>
 
-                        {/* Preços - SEMPRE na mesma linha (col-span-1 cada) */}
+                        {/* Preços */}
                         <div className="col-span-1">
                             <label className="block text-[11px] font-black uppercase text-gray-400 mb-1.5 ml-1">Custo (R$)</label>
                             <input
@@ -172,7 +171,7 @@ export default function ProductModal({ isOpen, onClose, onSuccess, product }) {
                             />
                         </div>
 
-                        {/* Descrição - Ocupa 2 colunas */}
+                        {/* Descrição */}
                         <div className="col-span-2">
                             <label className="block text-[11px] font-black uppercase text-gray-400 mb-1.5 ml-1">Descrição</label>
                             <textarea

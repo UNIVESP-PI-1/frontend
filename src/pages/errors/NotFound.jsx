@@ -47,7 +47,7 @@ const NotFound = () => {
           </Button>
         </div>
 
-        {/* Rodapé opcional */}
+        {/* Rodapé */}
         <p className="mt-12 text-sm text-gray-400">
           Se você acha que isso é um erro do sistema, <br />
           por favor, contate o suporte.

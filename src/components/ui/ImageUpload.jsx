@@ -29,7 +29,6 @@ export default function ImageUpload({
 
         const files = e.dataTransfer.files;
         if (files && files.length > 0) {
-            // Criamos um evento sintético para reutilizar sua lógica de handleLogoChange original
             const syntheticEvent = {
                 target: { files }
             };

@@ -11,7 +11,6 @@ export default function CategoryModal({ isOpen, onClose, onSuccess, category }) 
 
     const isEditing = !!category;
 
-    // Resetar ou preencher campos ao abrir o modal
     useEffect(() => {
         if (isOpen) {
             setName(category?.name || '');
@@ -36,8 +35,8 @@ export default function CategoryModal({ isOpen, onClose, onSuccess, category }) 
                 await storeCategory(payload);
                 notify("Categoria criada com sucesso!", "success");
             }
-            onSuccess(); // Recarrega a lista no componente pai
-            onClose();   // Fecha o modal
+            onSuccess();
+            onClose();
         } catch (error) {
             const msg = error.response?.data?.detail || "Erro ao salvar categoria.";
             notify(msg, "danger");

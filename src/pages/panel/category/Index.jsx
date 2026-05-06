@@ -3,7 +3,7 @@ import { LayoutGrid, Plus, Search, Edit, Trash2, Loader2 } from 'lucide-react';
 import Button from '../../../components/ui/Button';
 import DataTable from '../../../components/ui/DataTable';
 import ConfirmModal from '../../../components/ui/ConfirmModal';
-import CategoryModal from './CategoryModal'; // Você precisará criar este modal
+import CategoryModal from './CategoryModal';
 import { getCategories, deleteCategory } from '../../../api/category';
 import { useNotification } from '../../../context/NotificationContext';
 

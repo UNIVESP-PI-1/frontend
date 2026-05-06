@@ -16,7 +16,7 @@ export default function UserModal({ isOpen, onClose, onSuccess, user }) {
         if (isOpen) {
             setName(user?.name || '');
             setEmail(user?.email || '');
-            setPassword(''); // Senha sempre limpa por segurança
+            setPassword('');
         }
     }, [isOpen, user]);
 

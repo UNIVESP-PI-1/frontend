@@ -39,7 +39,6 @@ export default function Signin() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#f3f4f6] font-['Inter'] p-4">
-      {/* Container Centralizado */}
       <div className="w-full max-w-md bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden">
 
         {/* Topo do Card - Identidade */}
@@ -54,7 +53,7 @@ export default function Signin() {
         {/* Área do Formulário */}
         <div className="px-10 pb-10">
 
-          {/* Alertas Compactos */}
+          {/* Alertas */}
           {(successMsg || error) && (
             <div className={`mb-6 p-3 rounded-lg flex items-center gap-3 border ${error ? 'bg-red-50 border-red-100 text-red-700' : 'bg-green-50 border-green-100 text-green-700'
               }`}>
@@ -86,9 +85,6 @@ export default function Signin() {
                 <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-500">
                   Senha de Acesso
                 </label>
-                <a href="/auth/forgot-password" title="Recuperar credenciais" className="text-[11px] text-primary hover:text-dark font-bold uppercase">
-                  Esqueci
-                </a>
               </div>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
