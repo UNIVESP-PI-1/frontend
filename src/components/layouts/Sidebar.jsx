@@ -86,6 +86,8 @@ export default function Sidebar() {
 
           <SidebarItem to="/products" icon={<Package size={22} />} label="Produtos" expanded={expanded} isMobile={isMobileOpen} />
 
+          <SidebarItem to="/pdv" icon={<Package size={22} />} label="PDV" expanded={expanded} isMobile={isMobileOpen} />
+
           <SidebarItem to="/users" icon={<Users size={22} />} label="Usuários" expanded={expanded} isMobile={isMobileOpen} />
           
           {/* <SidebarItem to="/settings" icon={<Settings size={22} />} label="Configurações" expanded={expanded} isMobile={isMobileOpen} /> */}

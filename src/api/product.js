@@ -6,5 +6,6 @@ export const storeProduct = (data) => {
 
 export const getProducts = () => http.get('/product');
 export const getProduct = (id) => http.get(`/product/${id}`);
+export const getProductByBarcode = (code) => http.get(`products/barcode/${code}`);
 export const updateProduct = (id, data) => http.put(`/product/${id}`, data);
 export const deleteProduct = (id) => http.delete(`/product/${id}`);

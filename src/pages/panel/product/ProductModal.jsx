@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { X, Package, Save, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { X, Package, Save, Loader2, CheckCircle2, AlertCircle, ScanBarcode } from 'lucide-react';
 import { storeProduct, updateProduct } from '../../../api/product';
 import { getCategories } from '../../../api/category';
 import { useNotification } from '../../../context/NotificationContext';
 import { formatCurrency, parseToCents } from '../../../utils/money';
+import Scanner from '../../../components/layouts/Scanner';
 
 export default function ProductModal({ isOpen, onClose, onSuccess, product }) {
     const { notify } = useNotification();
     const [loading, setLoading] = useState(false);
     const [categories, setCategories] = useState([]);
+    const [showScanner, setShowScanner] = useState(false);
 
     const [formData, setFormData] = useState({
         name: '',
@@ -99,151 +101,177 @@ export default function ProductModal({ isOpen, onClose, onSuccess, product }) {
         setFormData({ ...formData, [field]: formatCurrency(value) });
     };
 
+    const handleScanSuccess = (decodedCode) => {
+        setFormData(prev => ({ ...prev, barcode: decodedCode }));
+        setShowScanner(false);
+        notify("Código lido com sucesso!", "success");
+    };
+
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
-            <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl my-8 overflow-hidden">
-                
-                <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-blue-600 rounded-lg text-white">
-                            <Package size={20} />
+        <>
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
+                <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl my-8 overflow-hidden">
+                    
+                    <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-blue-600 rounded-lg text-white">
+                                <Package size={20} />
+                            </div>
+                            <h2 className="font-bold text-gray-800 text-lg">
+                                {isEditing ? 'Editar Produto' : 'Novo Produto'}
+                            </h2>
                         </div>
-                        <h2 className="font-bold text-gray-800 text-lg">
-                            {isEditing ? 'Editar Produto' : 'Novo Produto'}
-                        </h2>
+                        <button onClick={onClose} className="p-2 hover:bg-gray-200 rounded-full transition-colors text-gray-400">
+                            <X size={20} />
+                        </button>
                     </div>
-                    <button onClick={onClose} className="p-2 hover:bg-gray-200 rounded-full transition-colors text-gray-400">
-                        <X size={20} />
-                    </button>
-                </div>
 
-                <form onSubmit={handleSubmit} className="p-6">
-                    <div className="grid grid-cols-2 gap-4">
+                    <form onSubmit={handleSubmit} className="p-6">
+                        <div className="grid grid-cols-2 gap-4">
 
-                        <div className="col-span-2 flex items-center justify-between bg-gray-50 p-3 rounded-2xl border border-gray-100">
-                            <label className="text-xs font-bold text-gray-600 uppercase ml-1">Status do Produto</label>
-                            <button 
-                                type="button"
-                                onClick={() => setFormData({ ...formData, status: !formData.status })}
-                                className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all flex items-center gap-2 ${
-                                    formData.status ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-500'
-                                }`}
+                            <div className="col-span-2 flex items-center justify-between bg-gray-50 p-3 rounded-2xl border border-gray-100">
+                                <label className="text-xs font-bold text-gray-600 uppercase ml-1">Status do Produto</label>
+                                <button 
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, status: !formData.status })}
+                                    className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all flex items-center gap-2 ${
+                                        formData.status ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-500'
+                                    }`}
+                                >
+                                    {formData.status ? <><CheckCircle2 size={14}/> Ativo</> : <><AlertCircle size={14}/> Inativo</>}
+                                </button>
+                            </div>
+
+                            <div className="col-span-2">
+                                <label className="block text-[11px] font-black uppercase text-gray-400 mb-1.5 ml-1">Nome do Produto</label>
+                                <input
+                                    required
+                                    value={formData.name}
+                                    onChange={e => setFormData({ ...formData, name: e.target.value })}
+                                    className="w-full px-4 py-2.5 bg-gray-50 border border-transparent rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 outline-none text-sm transition-all"
+                                />
+                            </div>
+
+                            <div className="col-span-1">
+                                <label className="block text-[11px] font-black uppercase text-gray-400 mb-1.5 ml-1">SKU</label>
+                                <input
+                                    required
+                                    value={formData.sku}
+                                    onChange={e => setFormData({ ...formData, sku: e.target.value })}
+                                    className="w-full px-4 py-2.5 bg-gray-50 border border-transparent rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 outline-none text-sm transition-all"
+                                />
+                            </div>
+                            <div className="col-span-1">
+                                <label className="block text-[11px] font-black uppercase text-gray-400 mb-1.5 ml-1">Cód. Barras</label>
+                                <div className="relative">
+                                    <input
+                                        value={formData.barcode}
+                                        onChange={e => setFormData({ ...formData, barcode: e.target.value })}
+                                        className="w-full px-4 py-2.5 bg-gray-50 border border-transparent rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 outline-none text-sm transition-all pr-10"
+                                    />
+                                    <button 
+                                        type="button"
+                                        onClick={() => setShowScanner(true)}
+                                        className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                        title="Escanear código"
+                                    >
+                                        <ScanBarcode size={18} />
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="col-span-2">
+                                <label className="block text-[11px] font-black uppercase text-gray-400 mb-1.5 ml-1">Categoria</label>
+                                <select
+                                    required
+                                    value={formData.category_id}
+                                    onChange={e => setFormData({ ...formData, category_id: e.target.value })}
+                                    className="w-full px-4 py-2.5 bg-gray-50 border border-transparent rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 outline-none text-sm transition-all"
+                                >
+                                    <option value="">Selecione...</option>
+                                    {categories.map(cat => (
+                                        <option key={cat.id} value={cat.id}>{cat.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className="col-span-1">
+                                <label className="block text-[11px] font-black uppercase text-gray-400 mb-1.5 ml-1">Estoque Atual</label>
+                                <input
+                                    type="number"
+                                    required
+                                    value={formData.stock_quantity}
+                                    onChange={e => setFormData({ ...formData, stock_quantity: e.target.value })}
+                                    className="w-full px-4 py-2.5 bg-gray-50 border border-transparent rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 outline-none text-sm transition-all"
+                                />
+                            </div>
+                            <div className="col-span-1">
+                                <label className="block text-[11px] font-black uppercase text-gray-400 mb-1.5 ml-1">Estoque Mínimo</label>
+                                <input
+                                    type="number"
+                                    required
+                                    value={formData.min_stock}
+                                    onChange={e => setFormData({ ...formData, min_stock: e.target.value })}
+                                    className="w-full px-4 py-2.5 bg-gray-50 border border-transparent rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 outline-none text-sm transition-all"
+                                />
+                            </div>
+
+                            <div className="col-span-1">
+                                <label className="block text-[11px] font-black uppercase text-gray-400 mb-1.5 ml-1">Custo</label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={formData.cost_price}
+                                    onChange={e => handlePriceChange('cost_price', e.target.value)}
+                                    className="w-full px-4 py-2.5 bg-gray-50 border border-transparent rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 outline-none text-sm transition-all font-mono"
+                                />
+                            </div>
+                            <div className="col-span-1">
+                                <label className="block text-[11px] font-black uppercase text-gray-400 mb-1.5 ml-1">Venda</label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={formData.sale_price}
+                                    onChange={e => handlePriceChange('sale_price', e.target.value)}
+                                    className="w-full px-4 py-2.5 bg-gray-50 border border-transparent rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 outline-none text-sm transition-all font-mono"
+                                />
+                            </div>
+
+                            <div className="col-span-2">
+                                <label className="block text-[11px] font-black uppercase text-gray-400 mb-1.5 ml-1">Descrição</label>
+                                <textarea
+                                    rows="2"
+                                    value={formData.description}
+                                    onChange={e => setFormData({ ...formData, description: e.target.value })}
+                                    className="w-full px-4 py-2.5 bg-gray-50 border border-transparent rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 outline-none text-sm resize-none transition-all"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="flex gap-3 pt-6">
+                            <button type="button" onClick={onClose} className="flex-1 py-3 border border-gray-200 text-gray-600 rounded-2xl font-bold text-xs hover:bg-gray-50 transition-colors">
+                                Cancelar
+                            </button>
+                            <button
+                                type="submit" disabled={loading}
+                                className="flex-[2] py-3 bg-blue-600 text-white rounded-2xl font-bold text-xs hover:bg-blue-700 shadow-lg shadow-blue-100 flex items-center justify-center gap-2 disabled:opacity-70 transition-all"
                             >
-                                {formData.status ? <><CheckCircle2 size={14}/> Ativo</> : <><AlertCircle size={14}/> Inativo</>}
+                                {loading ? <Loader2 className="animate-spin" size={16} /> : <><Save size={16} /> {isEditing ? 'Salvar' : 'Criar'}</>}
                             </button>
                         </div>
-
-                        <div className="col-span-2">
-                            <label className="block text-[11px] font-black uppercase text-gray-400 mb-1.5 ml-1">Nome do Produto</label>
-                            <input
-                                required
-                                value={formData.name}
-                                onChange={e => setFormData({ ...formData, name: e.target.value })}
-                                className="w-full px-4 py-2.5 bg-gray-50 border border-transparent rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 outline-none text-sm transition-all"
-                            />
-                        </div>
-
-                        <div className="col-span-1">
-                            <label className="block text-[11px] font-black uppercase text-gray-400 mb-1.5 ml-1">SKU</label>
-                            <input
-                                required
-                                value={formData.sku}
-                                onChange={e => setFormData({ ...formData, sku: e.target.value })}
-                                className="w-full px-4 py-2.5 bg-gray-50 border border-transparent rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 outline-none text-sm transition-all"
-                            />
-                        </div>
-                        <div className="col-span-1">
-                            <label className="block text-[11px] font-black uppercase text-gray-400 mb-1.5 ml-1">Cód. Barras</label>
-                            <input
-                                value={formData.barcode}
-                                onChange={e => setFormData({ ...formData, barcode: e.target.value })}
-                                className="w-full px-4 py-2.5 bg-gray-50 border border-transparent rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 outline-none text-sm transition-all"
-                            />
-                        </div>
-
-                        <div className="col-span-2">
-                            <label className="block text-[11px] font-black uppercase text-gray-400 mb-1.5 ml-1">Categoria</label>
-                            <select
-                                required
-                                value={formData.category_id}
-                                onChange={e => setFormData({ ...formData, category_id: e.target.value })}
-                                className="w-full px-4 py-2.5 bg-gray-50 border border-transparent rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 outline-none text-sm transition-all"
-                            >
-                                <option value="">Selecione...</option>
-                                {categories.map(cat => (
-                                    <option key={cat.id} value={cat.id}>{cat.name}</option>
-                                ))}
-                            </select>
-                        </div>
-
-                        <div className="col-span-1">
-                            <label className="block text-[11px] font-black uppercase text-gray-400 mb-1.5 ml-1">Estoque Atual</label>
-                            <input
-                                type="number"
-                                required
-                                value={formData.stock_quantity}
-                                onChange={e => setFormData({ ...formData, stock_quantity: e.target.value })}
-                                className="w-full px-4 py-2.5 bg-gray-50 border border-transparent rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 outline-none text-sm transition-all"
-                            />
-                        </div>
-                        <div className="col-span-1">
-                            <label className="block text-[11px] font-black uppercase text-gray-400 mb-1.5 ml-1">Estoque Mínimo</label>
-                            <input
-                                type="number"
-                                required
-                                value={formData.min_stock}
-                                onChange={e => setFormData({ ...formData, min_stock: e.target.value })}
-                                className="w-full px-4 py-2.5 bg-gray-50 border border-transparent rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 outline-none text-sm transition-all"
-                            />
-                        </div>
-
-                        <div className="col-span-1">
-                            <label className="block text-[11px] font-black uppercase text-gray-400 mb-1.5 ml-1">Custo</label>
-                            <input
-                                type="text"
-                                required
-                                value={formData.cost_price}
-                                onChange={e => handlePriceChange('cost_price', e.target.value)}
-                                className="w-full px-4 py-2.5 bg-gray-50 border border-transparent rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 outline-none text-sm transition-all font-mono"
-                            />
-                        </div>
-                        <div className="col-span-1">
-                            <label className="block text-[11px] font-black uppercase text-gray-400 mb-1.5 ml-1">Venda</label>
-                            <input
-                                type="text"
-                                required
-                                value={formData.sale_price}
-                                onChange={e => handlePriceChange('sale_price', e.target.value)}
-                                className="w-full px-4 py-2.5 bg-gray-50 border border-transparent rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 outline-none text-sm transition-all font-mono"
-                            />
-                        </div>
-
-                        <div className="col-span-2">
-                            <label className="block text-[11px] font-black uppercase text-gray-400 mb-1.5 ml-1">Descrição</label>
-                            <textarea
-                                rows="2"
-                                value={formData.description}
-                                onChange={e => setFormData({ ...formData, description: e.target.value })}
-                                className="w-full px-4 py-2.5 bg-gray-50 border border-transparent rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 outline-none text-sm resize-none transition-all"
-                            />
-                        </div>
-                    </div>
-
-                    <div className="flex gap-3 pt-6">
-                        <button type="button" onClick={onClose} className="flex-1 py-3 border border-gray-200 text-gray-600 rounded-2xl font-bold text-xs hover:bg-gray-50 transition-colors">
-                            Cancelar
-                        </button>
-                        <button
-                            type="submit" disabled={loading}
-                            className="flex-[2] py-3 bg-blue-600 text-white rounded-2xl font-bold text-xs hover:bg-blue-700 shadow-lg shadow-blue-100 flex items-center justify-center gap-2 disabled:opacity-70 transition-all"
-                        >
-                            {loading ? <Loader2 className="animate-spin" size={16} /> : <><Save size={16} /> {isEditing ? 'Salvar' : 'Criar'}</>}
-                        </button>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
-        </div>
+
+            {/* Componente de Scanner */}
+            {showScanner && (
+                <Scanner 
+                    onScan={handleScanSuccess} 
+                    onClose={() => setShowScanner(false)} 
+                />
+            )}
+        </>
     );
 }
