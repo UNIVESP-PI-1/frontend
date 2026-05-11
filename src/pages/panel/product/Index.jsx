@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Package, Plus, Search, Edit, Trash2, Loader2 } from 'lucide-react';
+import { Package, Plus, Search, Edit, Trash2, Loader2, AlertTriangle } from 'lucide-react';
 import Button from '../../../components/ui/Button';
 import DataTable from '../../../components/ui/DataTable';
 import ConfirmModal from '../../../components/ui/ConfirmModal';
@@ -65,19 +65,28 @@ export default function ProductIndex() {
     };
 
     const ProductCard = ({ product }) => (
-        <div className="bg-white p-5 border-b border-gray-100 last:border-0 flex flex-col gap-4">
+        <div className={`bg-white p-5 border-b border-gray-100 last:border-0 flex flex-col gap-4 ${!product.status && 'opacity-60'}`}>
             <div className="flex justify-between items-start">
                 <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-blue-50 text-blue-600">
+                    <div className={`p-2 rounded-lg ${!product.status ? 'bg-gray-100 text-gray-400' : 'bg-blue-50 text-blue-600'}`}>
                         <Package size={20} />
                     </div>
                     <div>
-                        <h4 className="font-bold text-gray-900">{product.name}</h4>
+                        <div className="flex items-center gap-2">
+                            <h4 className="font-bold text-gray-900">{product.name}</h4>
+                            {!product.status && <span className="text-[8px] bg-gray-100 px-1.5 py-0.5 rounded text-gray-500 font-black uppercase">Inativo</span>}
+                        </div>
                         <span className="text-[10px] font-mono text-gray-400 uppercase">SKU: {product.sku}</span>
                     </div>
                 </div>
                 <div className="text-right">
                     <p className="text-sm font-bold text-green-600">{formatCurrency(product.sale_price)}</p>
+                    <div className="flex items-center gap-1 justify-end">
+                        <span className={`text-[10px] font-bold ${product.stock_quantity <= product.min_stock ? 'text-red-500' : 'text-gray-400'}`}>
+                            Qtd: {product.stock_quantity}
+                        </span>
+                        {product.stock_quantity <= product.min_stock && <AlertTriangle size={10} className="text-red-500" />}
+                    </div>
                 </div>
             </div>
 
@@ -94,26 +103,43 @@ export default function ProductIndex() {
 
     const columns = [
         {
+            header: 'Status',
+            width: '80px',
+            render: (p) => (
+                <div className={`w-2 h-2 rounded-full mx-auto ${p.status ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]' : 'bg-gray-300'}`} />
+            )
+        },
+        {
             header: 'Produto',
             render: (p) => (
-                <div className="flex items-center gap-3">
+                <div className={`flex items-center gap-3 ${!p.status && 'opacity-50'}`}>
                     <div className="p-2 rounded-lg bg-blue-50 text-blue-600">
                         <Package size={18} />
                     </div>
                     <div className="flex flex-col">
                         <span className="font-bold text-gray-800">{p.name}</span>
-                        <span className="text-[10px] text-gray-400 font-mono">SKU: {p.sku}</span>
+                        <span className="text-[10px] text-gray-400 font-mono uppercase">SKU: {p.sku}</span>
                     </div>
+                </div>
+            )
+        },
+        {
+            header: 'Estoque',
+            render: (p) => (
+                <div className="flex flex-col">
+                    <div className="flex items-center gap-1.5">
+                        <span className={`font-bold ${p.stock_quantity <= p.min_stock ? 'text-red-600' : 'text-gray-700'}`}>
+                            {p.stock_quantity}
+                        </span>
+                        {p.stock_quantity <= p.min_stock && <AlertTriangle size={14} className="text-red-500 animate-pulse" />}
+                    </div>
+                    <span className="text-[10px] text-gray-400">Min: {p.min_stock}</span>
                 </div>
             )
         },
         {
             header: 'Preço Venda',
             render: (p) => <span className="font-semibold text-gray-700">{formatCurrency(p.sale_price)}</span>
-        },
-        {
-            header: 'Código de Barras',
-            render: (p) => <span className="text-sm text-gray-500">{p.barcode || '-'}</span>
         },
         {
             header: 'Ações',
