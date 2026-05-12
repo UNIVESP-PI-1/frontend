@@ -19,7 +19,7 @@ export default function PanelRoutes() {
 
           <Route path="/products" element={<ProductIndex />} />
 
-          <StockOut path="/pdv" element={<StockOut />} />
+          <Route path="/pdv" element={<StockOut />} />
 
           <Route path="/users" element={<UserIndex />} />
 
