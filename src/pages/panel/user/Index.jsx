@@ -40,7 +40,7 @@ export default function UserIndex() {
             setUsers(prev => prev.filter(u => u.id !== selectedUser.id));
             setDeleteModalOpen(false);
         } catch (error) {
-            notify("Erro ao excluir usuário", "danger");
+            notify("Erro ao excluir usuário", "error");
         } finally {
             setIsDeleting(false);
             setSelectedUser(null);
