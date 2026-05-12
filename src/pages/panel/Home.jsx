@@ -34,7 +34,7 @@ export default function Home() {
                 setStats({
                     products: prodRes.data?.length || 0,
                     categories: catRes.data?.length || 0,
-                    users: userRes.data?.users?.length || 0
+                    users: userRes.data?.length || 0
                 });
             } catch (error) {
                 console.error("Erro ao carregar estatísticas", error);
