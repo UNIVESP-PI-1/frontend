@@ -8,6 +8,7 @@ import {
   Settings,
   Layers,
   Package,
+  Tablet,
   ChevronRight,
   Menu,
   X,
@@ -86,7 +87,7 @@ export default function Sidebar() {
 
           <SidebarItem to="/products" icon={<Package size={22} />} label="Produtos" expanded={expanded} isMobile={isMobileOpen} />
 
-          <SidebarItem to="/pdv" icon={<Package size={22} />} label="PDV" expanded={expanded} isMobile={isMobileOpen} />
+          <SidebarItem to="/pdv" icon={<Tablet size={22} />} label="PDV" expanded={expanded} isMobile={isMobileOpen} />
 
           <SidebarItem to="/users" icon={<Users size={22} />} label="Usuários" expanded={expanded} isMobile={isMobileOpen} />
           
