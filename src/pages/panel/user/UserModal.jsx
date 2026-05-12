@@ -38,8 +38,7 @@ export default function UserModal({ isOpen, onClose, onSuccess, user }) {
             onSuccess();
             onClose();
         } catch (error) {
-            const msg = error.response?.data?.detail || "Erro ao salvar usuário.";
-            notify(msg, "danger");
+            notify("Erro ao salvar usuário.", "error");
         } finally {
             setLoading(false);
         }
