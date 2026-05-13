@@ -1,7 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { Eye, EyeOff, Mail, Lock, ShieldCheck, Boxes, AlertCircle, CircleDot } from 'lucide-react';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
+import {
+  Eye,
+  EyeOff,
+  Mail,
+  Lock,
+  ShieldCheck,
+  Boxes,
+  AlertCircle,
+  CircleDot,
+  UserPlus
+} from 'lucide-react';
 
 export default function Signin() {
   const { login, token } = useAuth();
@@ -31,7 +41,11 @@ export default function Signin() {
       await login(email, password);
       navigate('/home', { replace: true });
     } catch (err) {
-      setError(err.response?.status === 401 ? 'Credenciais inválidas.' : 'Falha na comunicação com o servidor.');
+      setError(
+        err.response?.status === 401
+          ? 'Credenciais inválidas.'
+          : 'Falha na comunicação com o servidor.'
+      );
     } finally {
       setLoading(false);
     }
@@ -41,34 +55,56 @@ export default function Signin() {
     <div className="min-h-screen flex items-center justify-center bg-[#f3f4f6] font-['Inter'] p-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden">
 
-        {/* Topo do Card - Identidade */}
+        {/* Topo do Card */}
         <div className="pt-10 pb-6 px-10 text-center">
           <div className="inline-flex items-center justify-center p-3 bg-dark rounded-xl mb-4 shadow-lg shadow-dark/10">
             <Boxes className="w-7 h-7 text-white" />
           </div>
-          <h1 className="text-xl font-bold text-dark tracking-tight">Gestão de Estoque</h1>
-          <p className="text-xs font-bold uppercase tracking-[0.15em] text-gray-400 mt-1">Console de Administração</p>
+
+          <h1 className="text-xl font-bold text-dark tracking-tight">
+            Gestão de Estoque
+          </h1>
+
+          <p className="text-xs font-bold uppercase tracking-[0.15em] text-gray-400 mt-1">
+            Console de Administração
+          </p>
         </div>
 
-        {/* Área do Formulário */}
+        {/* Formulário */}
         <div className="px-10 pb-10">
 
           {/* Alertas */}
           {(successMsg || error) && (
-            <div className={`mb-6 p-3 rounded-lg flex items-center gap-3 border ${error ? 'bg-red-50 border-red-100 text-red-700' : 'bg-green-50 border-green-100 text-green-700'
-              }`}>
-              {error ? <AlertCircle className="w-4 h-4 flex-shrink-0" /> : <ShieldCheck className="w-4 h-4 flex-shrink-0" />}
-              <p className="text-xs font-semibold">{error || successMsg}</p>
+            <div
+              className={`mb-6 p-3 rounded-lg flex items-center gap-3 border ${
+                error
+                  ? 'bg-red-50 border-red-100 text-red-700'
+                  : 'bg-green-50 border-green-100 text-green-700'
+              }`}
+            >
+              {error ? (
+                <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              ) : (
+                <ShieldCheck className="w-4 h-4 flex-shrink-0" />
+              )}
+
+              <p className="text-xs font-semibold">
+                {error || successMsg}
+              </p>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
+
+            {/* Email */}
             <div>
               <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-500 mb-1.5 ml-1">
                 Email
               </label>
+
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+
                 <input
                   type="email"
                   value={email}
@@ -80,14 +116,17 @@ export default function Signin() {
               </div>
             </div>
 
+            {/* Senha */}
             <div>
               <div className="flex justify-between items-center mb-1.5 ml-1">
                 <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-500">
                   Senha de Acesso
                 </label>
               </div>
+
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
@@ -96,16 +135,22 @@ export default function Signin() {
                   placeholder="••••••••"
                   required
                 />
+
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="cursor-pointer absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-dark transition-colors"
                 >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {showPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
                 </button>
               </div>
             </div>
 
+            {/* Botão Login */}
             <button
               type="submit"
               disabled={loading}
@@ -119,7 +164,22 @@ export default function Signin() {
             </button>
           </form>
 
-          {/* Rodapé do Card */}
+          {/* Link Cadastro */}
+          <div className="mt-5 text-center">
+            <p className="text-sm text-gray-500">
+              Ainda não possui conta?
+            </p>
+
+            <Link
+              to="/auth/signup"
+              className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-dark hover:text-black transition-colors"
+            >
+              <UserPlus className="w-4 h-4" />
+              Criar Conta
+            </Link>
+          </div>
+
+          {/* Rodapé */}
           <div className="mt-8 pt-6 border-t border-gray-50 text-center">
             <span className="text-[10px] text-gray-400 font-medium uppercase tracking-[0.2em]">
               Acesso Restrito · {new Date().getFullYear()}
