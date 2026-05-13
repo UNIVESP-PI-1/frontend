@@ -150,7 +150,7 @@ export default function Signup() {
           <div className="mt-8 pt-6 border-t border-gray-50 text-center">
             <p className="text-xs text-gray-500">
               Já possui acesso?{' '}
-              <Link to="/login" className="text-dark font-bold hover:underline">
+              <Link to="/" className="text-dark font-bold hover:underline">
                 Fazer Login
               </Link>
             </p>
