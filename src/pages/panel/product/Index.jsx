@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Package, Plus, Search, Edit, Trash2, Loader2, AlertTriangle } from 'lucide-react';
+import { Package, Plus, Search, Edit, Trash2, Loader2, AlertTriangle, ArrowLeftRight } from 'lucide-react';
 import Button from '../../../components/ui/Button';
 import DataTable from '../../../components/ui/DataTable';
 import ConfirmModal from '../../../components/ui/ConfirmModal';
 import ProductModal from './ProductModal';
+import StockModal from './StockModal';
 import { getProducts, deleteProduct } from '../../../api/product';
 import { useNotification } from '../../../context/NotificationContext';
 
@@ -14,6 +15,7 @@ export default function ProductIndex() {
     const { notify } = useNotification();
 
     const [productModalOpen, setProductModalOpen] = useState(false);
+    const [stockModalOpen, setStockModalOpen] = useState(false);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -64,6 +66,11 @@ export default function ProductIndex() {
     const handleEdit = (product) => {
         setSelectedProduct(product);
         setProductModalOpen(true);
+    };
+
+    const handleStockClick = (product) => {
+        setSelectedProduct(product);
+        setStockModalOpen(true);
     };
 
     const handleDeleteClick = (product) => {
@@ -117,8 +124,11 @@ export default function ProductIndex() {
                 </div>
 
                 <div className="flex gap-2">
-                    <button onClick={() => handleEdit(product)} className="flex-1 py-2 bg-amber-50 text-amber-600 rounded-xl flex justify-center items-center gap-2 text-xs font-bold hover:bg-amber-100">
-                        <Edit size={16} /> Editar
+                    <button onClick={() => handleStockClick(product)} className="flex-1 py-2 bg-blue-50 text-blue-600 rounded-xl flex justify-center items-center gap-2 text-xs font-bold hover:bg-blue-100">
+                        <ArrowLeftRight size={16} /> Estoque
+                    </button>
+                    <button onClick={() => handleEdit(product)} className="py-2 px-3 bg-amber-50 text-amber-600 rounded-xl flex justify-center items-center hover:bg-amber-100">
+                        <Edit size={16} />
                     </button>
                     <button onClick={() => handleDeleteClick(product)} className="p-2 bg-red-50 text-red-600 rounded-xl hover:bg-red-100">
                         <Trash2 size={18} />
@@ -180,6 +190,7 @@ export default function ProductIndex() {
             align: 'right',
             render: (p) => (
                 <div className="flex justify-end gap-1">
+                    <Button variant="outline" className="px-2 border-none text-blue-600 hover:bg-blue-50" icon={ArrowLeftRight} onClick={() => handleStockClick(p)} />
                     <Button variant="outline" className="px-2 border-none text-amber-600 hover:bg-amber-50" icon={Edit} onClick={() => handleEdit(p)} />
                     <Button variant="outline" className="px-2 border-none text-red-600 hover:bg-red-50" icon={Trash2} onClick={() => handleDeleteClick(p)} />
                 </div>
@@ -243,6 +254,13 @@ export default function ProductIndex() {
             <ProductModal
                 isOpen={productModalOpen}
                 onClose={() => setProductModalOpen(false)}
+                onSuccess={fetchProducts}
+                product={selectedProduct}
+            />
+
+            <StockModal
+                isOpen={stockModalOpen}
+                onClose={() => setStockModalOpen(false)}
                 onSuccess={fetchProducts}
                 product={selectedProduct}
             />
