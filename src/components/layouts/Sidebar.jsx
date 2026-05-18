@@ -50,11 +50,11 @@ export default function Sidebar() {
 
       <aside
         className={`
-    fixed inset-y-0 right-0 z-40 flex flex-col bg-primary text-white transition-all duration-300 border-l border-secondary/50
-    lg:relative lg:left-0 lg:translate-x-0
-    ${isMobileOpen ? 'translate-x-0 w-64' : 'translate-x-full w-64'} 
-    ${expanded ? 'lg:w-64' : 'lg:w-20'}
-  `}
+          fixed inset-y-0 right-0 z-40 flex flex-col bg-primary text-white transition-all duration-300 border-l border-secondary/50
+          lg:sticky lg:top-0 lg:h-screen lg:left-0 lg:translate-x-0
+          ${isMobileOpen ? 'translate-x-0 w-64' : 'translate-x-full w-64'} 
+          ${expanded ? 'lg:w-64' : 'lg:w-20'}
+        `}
       >
         {/* Header */}
         <div className="p-4 flex items-center justify-between border-b border-secondary h-20">
