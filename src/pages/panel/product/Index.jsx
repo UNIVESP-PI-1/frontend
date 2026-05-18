@@ -25,6 +25,28 @@ export default function ProductIndex() {
         }).format(value / 100);
     };
 
+    const getStockColor = (stock, min) => {
+        if (stock < min) {
+            return {
+                text: 'text-red-500',
+                textBold: 'text-red-600',
+                icon: 'text-red-500'
+            };
+        }
+        if (stock === min) {
+            return {
+                text: 'text-amber-500',
+                textBold: 'text-amber-600',
+                icon: 'text-amber-500'
+            };
+        }
+        return {
+            text: 'text-gray-400',
+            textBold: 'text-gray-700',
+            icon: 'text-gray-400'
+        };
+    };
+
     const fetchProducts = async () => {
         setLoading(true);
         try {
@@ -64,42 +86,47 @@ export default function ProductIndex() {
         }
     };
 
-    const ProductCard = ({ product }) => (
-        <div className={`bg-white p-5 border-b border-gray-100 last:border-0 flex flex-col gap-4 ${!product.status && 'opacity-60'}`}>
-            <div className="flex justify-between items-start">
-                <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-lg ${!product.status ? 'bg-gray-100 text-gray-400' : 'bg-blue-50 text-blue-600'}`}>
-                        <Package size={20} />
-                    </div>
-                    <div>
-                        <div className="flex items-center gap-2">
-                            <h4 className="font-bold text-gray-900">{product.name}</h4>
-                            {!product.status && <span className="text-[8px] bg-gray-100 px-1.5 py-0.5 rounded text-gray-500 font-black uppercase">Inativo</span>}
-                        </div>
-                        <span className="text-[10px] font-mono text-gray-400 uppercase">SKU: {product.sku}</span>
-                    </div>
-                </div>
-                <div className="text-right">
-                    <p className="text-sm font-bold text-green-600">{formatCurrency(product.sale_price)}</p>
-                    <div className="flex items-center gap-1 justify-end">
-                        <span className={`text-[10px] font-bold ${product.stock_quantity <= product.min_stock ? 'text-red-500' : 'text-gray-400'}`}>
-                            Qtd: {product.stock_quantity}
-                        </span>
-                        {product.stock_quantity <= product.min_stock && <AlertTriangle size={10} className="text-red-500" />}
-                    </div>
-                </div>
-            </div>
+    const ProductCard = ({ product }) => {
+        const stockColors = getStockColor(product.stock_quantity, product.min_stock);
+        const isWarning = product.stock_quantity <= product.min_stock;
 
-            <div className="flex gap-2">
-                <button onClick={() => handleEdit(product)} className="flex-1 py-2 bg-amber-50 text-amber-600 rounded-xl flex justify-center items-center gap-2 text-xs font-bold hover:bg-amber-100">
-                    <Edit size={16} /> Editar
-                </button>
-                <button onClick={() => handleDeleteClick(product)} className="p-2 bg-red-50 text-red-600 rounded-xl hover:bg-red-100">
-                    <Trash2 size={18} />
-                </button>
+        return (
+            <div className={`bg-white p-5 border-b border-gray-100 last:border-0 flex flex-col gap-4 ${!product.status && 'opacity-60'}`}>
+                <div className="flex justify-between items-start">
+                    <div className="flex items-center gap-3">
+                        <div className={`p-2 rounded-lg ${!product.status ? 'bg-gray-100 text-gray-400' : 'bg-blue-50 text-blue-600'}`}>
+                            <Package size={20} />
+                        </div>
+                        <div>
+                            <div className="flex items-center gap-2">
+                                <h4 className="font-bold text-gray-900">{product.name}</h4>
+                                {!product.status && <span className="text-[8px] bg-gray-100 px-1.5 py-0.5 rounded text-gray-500 font-black uppercase">Inativo</span>}
+                            </div>
+                            <span className="text-[10px] font-mono text-gray-400 uppercase">SKU: {product.sku}</span>
+                        </div>
+                    </div>
+                    <div className="text-right">
+                        <p className="text-sm font-bold text-green-600">{formatCurrency(product.sale_price)}</p>
+                        <div className="flex items-center gap-1 justify-end">
+                            <span className={`text-[10px] font-bold ${isWarning ? stockColors.text : 'text-gray-400'}`}>
+                                Qtd: {product.stock_quantity}
+                            </span>
+                            {isWarning && <AlertTriangle size={10} className={stockColors.icon} />}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex gap-2">
+                    <button onClick={() => handleEdit(product)} className="flex-1 py-2 bg-amber-50 text-amber-600 rounded-xl flex justify-center items-center gap-2 text-xs font-bold hover:bg-amber-100">
+                        <Edit size={16} /> Editar
+                    </button>
+                    <button onClick={() => handleDeleteClick(product)} className="p-2 bg-red-50 text-red-600 rounded-xl hover:bg-red-100">
+                        <Trash2 size={18} />
+                    </button>
+                </div>
             </div>
-        </div>
-    );
+        );
+    };
 
     const columns = [
         {
@@ -127,17 +154,22 @@ export default function ProductIndex() {
         },
         {
             header: 'Estoque',
-            render: (p) => (
-                <div className="flex flex-col">
-                    <div className="flex items-center gap-1.5">
-                        <span className={`font-bold ${p.stock_quantity <= p.min_stock ? 'text-red-600' : 'text-gray-700'}`}>
-                            {p.stock_quantity}
-                        </span>
-                        {p.stock_quantity <= p.min_stock && <AlertTriangle size={14} className="text-red-500 animate-pulse" />}
+            render: (p) => {
+                const stockColors = getStockColor(p.stock_quantity, p.min_stock);
+                const isWarning = p.stock_quantity <= p.min_stock;
+
+                return (
+                    <div className="flex flex-col">
+                        <div className="flex items-center gap-1.5">
+                            <span className={`font-bold ${isWarning ? stockColors.textBold : 'text-gray-700'}`}>
+                                {p.stock_quantity}
+                            </span>
+                            {isWarning && <AlertTriangle size={14} className={`${stockColors.icon} animate-pulse`} />}
+                        </div>
+                        <span className="text-[10px] text-gray-400">Min: {p.min_stock}</span>
                     </div>
-                    <span className="text-[10px] text-gray-400">Min: {p.min_stock}</span>
-                </div>
-            )
+                );
+            }
         },
         {
             header: 'Preço Venda',
