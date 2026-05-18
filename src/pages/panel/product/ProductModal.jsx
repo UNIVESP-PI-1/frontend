@@ -4,13 +4,11 @@ import { storeProduct, updateProduct } from '../../../api/product';
 import { getCategories } from '../../../api/category';
 import { useNotification } from '../../../context/NotificationContext';
 import { formatCurrency, parseToCents } from '../../../utils/money';
-import Scanner from '../../../components/layouts/Scanner';
 
 export default function ProductModal({ isOpen, onClose, onSuccess, product }) {
     const { notify } = useNotification();
     const [loading, setLoading] = useState(false);
     const [categories, setCategories] = useState([]);
-    const [showScanner, setShowScanner] = useState(false);
 
     const [formData, setFormData] = useState({
         name: '',
@@ -101,12 +99,6 @@ export default function ProductModal({ isOpen, onClose, onSuccess, product }) {
         setFormData({ ...formData, [field]: formatCurrency(value) });
     };
 
-    const handleScanSuccess = (decodedCode) => {
-        setFormData(prev => ({ ...prev, barcode: decodedCode }));
-        setShowScanner(false);
-        notify("Código lido com sucesso!", "success");
-    };
-
     if (!isOpen) return null;
 
     return (
@@ -171,14 +163,6 @@ export default function ProductModal({ isOpen, onClose, onSuccess, product }) {
                                         onChange={e => setFormData({ ...formData, barcode: e.target.value })}
                                         className="w-full px-4 py-2.5 bg-gray-50 border border-transparent rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 outline-none text-sm transition-all pr-10"
                                     />
-                                    <button 
-                                        type="button"
-                                        onClick={() => setShowScanner(true)}
-                                        className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                                        title="Escanear código"
-                                    >
-                                        <ScanBarcode size={18} />
-                                    </button>
                                 </div>
                             </div>
 
@@ -264,14 +248,6 @@ export default function ProductModal({ isOpen, onClose, onSuccess, product }) {
                     </form>
                 </div>
             </div>
-
-            {/* Componente de Scanner */}
-            {showScanner && (
-                <Scanner 
-                    onScan={handleScanSuccess} 
-                    onClose={() => setShowScanner(false)} 
-                />
-            )}
         </>
     );
 }
