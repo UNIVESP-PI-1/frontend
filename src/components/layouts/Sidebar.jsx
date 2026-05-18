@@ -7,6 +7,7 @@ import {
   Users,
   Layers,
   Package,
+  ArrowLeftRight,
   ChevronRight,
   Menu,
   X,
@@ -83,6 +84,7 @@ export default function Sidebar() {
           <SidebarItem to="/categories" icon={<Layers size={22} />} label="Categorias" expanded={expanded} isMobile={isMobileOpen} />
 
           <SidebarItem to="/products" icon={<Package size={22} />} label="Produtos" expanded={expanded} isMobile={isMobileOpen} />
+          <SidebarItem to="/products-flow" icon={<ArrowLeftRight size={22} />} label="Fluxo de Produtos" expanded={expanded} isMobile={isMobileOpen} />
 
           <SidebarItem to="/users" icon={<Users size={22} />} label="Usuários" expanded={expanded} isMobile={isMobileOpen} />
   
