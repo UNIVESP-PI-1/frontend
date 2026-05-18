@@ -28,6 +28,7 @@ export default function ProductFlow() {
     useEffect(() => {
         fetchFlow();
     }, []);
+
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         return date.toLocaleDateString('pt-BR', {
@@ -44,7 +45,15 @@ export default function ProductFlow() {
             item.product_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             item.user_name.toLowerCase().includes(searchTerm.toLowerCase());
 
-        const matchesType = typeFilter === '' || item.type === typeFilter;
+        // Se o filtro selecionado for ENTRADA, exibe também os de CADASTRO INICIAL
+        let matchesType = true;
+        if (typeFilter !== '') {
+            if (typeFilter === 'ENTRADA') {
+                matchesType = item.type === 'ENTRADA' || item.type === 'CADASTRO INICIAL';
+            } else {
+                matchesType = item.type === typeFilter;
+            }
+        }
 
         let matchesDate = true;
         if (dateFilter) {
@@ -56,7 +65,7 @@ export default function ProductFlow() {
     });
 
     const FlowMobileCard = ({ item }) => {
-        const isEntry = item.type === "ENTRADA";
+        const isEntry = item.type === "ENTRADA" || item.type === "CADASTRO INICIAL";  
         return (
             <div className="bg-white p-4 border-b border-gray-100 last:border-0 flex flex-col gap-2">
                 <div className="flex justify-between items-start">
@@ -86,9 +95,10 @@ export default function ProductFlow() {
     const columns = [
         {
             header: 'Tipo',
-            width: '120px',
+            width: '180px',
             render: (item) => {
-                const isEntry = item.type === "ENTRADA";
+                // CORRIGIDO AQUI: Adicionado CADASTRO INICIAL na validação Desktop
+                const isEntry = item.type === "ENTRADA" || item.type === "CADASTRO INICIAL";
                 return (
                     <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${
                         isEntry ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'
@@ -114,7 +124,8 @@ export default function ProductFlow() {
             header: 'Quantidade',
             width: '120px',
             render: (item) => {
-                const isEntry = item.type === "ENTRADA";
+                // CORRIGIDO AQUI TAMBÉM: Para exibir o sinal de "+" no cadastro inicial
+                const isEntry = item.type === "ENTRADA" || item.type === "CADASTRO INICIAL";
                 return (
                     <span className={`font-mono font-bold ${isEntry ? 'text-emerald-600' : 'text-rose-600'}`}>
                         {isEntry ? '+' : '-'}{item.quantity}
@@ -170,9 +181,7 @@ export default function ProductFlow() {
                     />
                 </div>
 
-                {/* Filtros Dropdown e Data */}
                 <div className="flex flex-col sm:flex-row gap-3">
-                    {/* Select Tipo */}
                     <div className="relative">
                         <select
                             className="w-full sm:w-44 pl-4 pr-10 py-3 bg-slate-50 border-transparent rounded-2xl focus:bg-white focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all text-sm appearance-none font-medium text-slate-700"
@@ -186,7 +195,6 @@ export default function ProductFlow() {
                         <Filter className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={16} />
                     </div>
 
-                    {/* Input Data */}
                     <div className="relative">
                         <input
                             type="date"
@@ -199,7 +207,6 @@ export default function ProductFlow() {
             </div>
 
             <div className="bg-white rounded-b-[2rem] border border-slate-100 overflow-hidden shadow-sm">
-                
                 <div className="md:hidden">
                     {loading ? (
                         <div className="p-10 flex justify-center">
