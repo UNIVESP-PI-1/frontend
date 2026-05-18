@@ -3,7 +3,7 @@ import { Package, Plus, Search, Edit, Trash2, Loader2, AlertTriangle } from 'luc
 import Button from '../../../components/ui/Button';
 import DataTable from '../../../components/ui/DataTable';
 import ConfirmModal from '../../../components/ui/ConfirmModal';
-import ProductModal from './ProductModal'; 
+import ProductModal from './ProductModal';
 import { getProducts, deleteProduct } from '../../../api/product';
 import { useNotification } from '../../../context/NotificationContext';
 
@@ -106,7 +106,9 @@ export default function ProductIndex() {
             header: 'Status',
             width: '80px',
             render: (p) => (
-                <div className={`w-2 h-2 rounded-full mx-auto ${p.status ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]' : 'bg-gray-300'}`} />
+                <div className="flex items-center justify-start py-1">
+                    <div className={`w-2 h-2 rounded-full ${p.status ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]' : 'bg-gray-300'}`} />
+                </div>
             )
         },
         {
@@ -153,8 +155,8 @@ export default function ProductIndex() {
         }
     ];
 
-    const filteredProducts = products.filter(p => 
-        p.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    const filteredProducts = products.filter(p =>
+        p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         p.sku.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
