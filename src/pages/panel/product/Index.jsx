@@ -20,13 +20,6 @@ export default function ProductIndex() {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [isDeleting, setIsDeleting] = useState(false);
 
-    const formatCurrency = (value) => {
-        return new Intl.NumberFormat('pt-BR', {
-            style: 'currency',
-            currency: 'BRL',
-        }).format(value / 100);
-    };
-
     const getStockColor = (stock, min) => {
         if (stock < min) {
             return {
@@ -113,7 +106,6 @@ export default function ProductIndex() {
                         </div>
                     </div>
                     <div className="text-right">
-                        <p className="text-sm font-bold text-green-600">{formatCurrency(product.sale_price)}</p>
                         <div className="flex items-center gap-1 justify-end">
                             <span className={`text-[10px] font-bold ${isWarning ? stockColors.text : 'text-gray-400'}`}>
                                 Qtd: {product.stock_quantity}
@@ -182,10 +174,6 @@ export default function ProductIndex() {
             }
         },
         {
-            header: 'Preço Venda',
-            render: (p) => <span className="font-semibold text-gray-700">{formatCurrency(p.sale_price)}</span>
-        },
-        {
             header: 'Ações',
             align: 'right',
             render: (p) => (
@@ -212,7 +200,7 @@ export default function ProductIndex() {
                     </div>
                     <div>
                         <h1 className="text-2xl font-black text-slate-900 tracking-tight">Produtos</h1>
-                        <p className="text-slate-500 text-sm">Gerencie seu inventário e preços</p>
+                        <p className="text-slate-500 text-sm">Gerencie seu inventário</p>
                     </div>
                 </div>
                 <Button
@@ -247,7 +235,7 @@ export default function ProductIndex() {
                     )}
                 </div>
                 <div className="hidden md:block">
-                    <DataTable columns={columns} data={filteredProducts} loading={loading} />
+                    <DataTable columns={columns} data={filteredProducts} loading={loading} itemsPerPage={8} />
                 </div>
             </div>
 

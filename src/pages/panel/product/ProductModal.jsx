@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { X, Package, Save, Loader2, CheckCircle2, AlertCircle, ScanBarcode } from 'lucide-react';
+import { X, Package, Save, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import { storeProduct, updateProduct } from '../../../api/product';
 import { getCategories } from '../../../api/category';
 import { useNotification } from '../../../context/NotificationContext';
-import { formatCurrency, parseToCents } from '../../../utils/money';
 
 export default function ProductModal({ isOpen, onClose, onSuccess, product }) {
     const { notify } = useNotification();
@@ -16,8 +15,6 @@ export default function ProductModal({ isOpen, onClose, onSuccess, product }) {
         category_id: '',
         sku: '',
         barcode: '',
-        cost_price: '',
-        sale_price: '',
         stock_quantity: 0,
         min_stock: 0,
         status: true
@@ -44,8 +41,6 @@ export default function ProductModal({ isOpen, onClose, onSuccess, product }) {
                     category_id: product.category_id,
                     sku: product.sku,
                     barcode: product.barcode || '',
-                    cost_price: formatCurrency(product.cost_price),
-                    sale_price: formatCurrency(product.sale_price),
                     stock_quantity: product.stock_quantity || 0,
                     min_stock: product.min_stock || 0,
                     status: product.status ?? true
@@ -54,8 +49,6 @@ export default function ProductModal({ isOpen, onClose, onSuccess, product }) {
                 setFormData({
                     name: '', description: '', category_id: '',
                     sku: '', barcode: '', 
-                    cost_price: formatCurrency(0), 
-                    sale_price: formatCurrency(0),
                     stock_quantity: 0,
                     min_stock: 0,
                     status: true
@@ -71,10 +64,10 @@ export default function ProductModal({ isOpen, onClose, onSuccess, product }) {
         const payload = {
             ...formData,
             category_id: parseInt(formData.category_id),
-            cost_price: parseToCents(formData.cost_price),
-            sale_price: parseToCents(formData.sale_price),
             stock_quantity: parseInt(formData.stock_quantity),
-            min_stock: parseInt(formData.min_stock)
+            min_stock: parseInt(formData.min_stock),
+            cost_price: 0,
+            sale_price: 0
         };
 
         try {
@@ -93,10 +86,6 @@ export default function ProductModal({ isOpen, onClose, onSuccess, product }) {
         } finally {
             setLoading(false);
         }
-    };
-
-    const handlePriceChange = (field, value) => {
-        setFormData({ ...formData, [field]: formatCurrency(value) });
     };
 
     if (!isOpen) return null;
@@ -199,27 +188,6 @@ export default function ProductModal({ isOpen, onClose, onSuccess, product }) {
                                     value={formData.min_stock}
                                     onChange={e => setFormData({ ...formData, min_stock: e.target.value })}
                                     className="w-full px-4 py-2.5 bg-gray-50 border border-transparent rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 outline-none text-sm transition-all"
-                                />
-                            </div>
-
-                            <div className="col-span-1">
-                                <label className="block text-[11px] font-black uppercase text-gray-400 mb-1.5 ml-1">Custo</label>
-                                <input
-                                    type="text"
-                                    required
-                                    value={formData.cost_price}
-                                    onChange={e => handlePriceChange('cost_price', e.target.value)}
-                                    className="w-full px-4 py-2.5 bg-gray-50 border border-transparent rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 outline-none text-sm transition-all font-mono"
-                                />
-                            </div>
-                            <div className="col-span-1">
-                                <label className="block text-[11px] font-black uppercase text-gray-400 mb-1.5 ml-1">Venda</label>
-                                <input
-                                    type="text"
-                                    required
-                                    value={formData.sale_price}
-                                    onChange={e => handlePriceChange('sale_price', e.target.value)}
-                                    className="w-full px-4 py-2.5 bg-gray-50 border border-transparent rounded-xl focus:ring-2 focus:ring-blue-500/10 focus:border-blue-600 outline-none text-sm transition-all font-mono"
                                 />
                             </div>
 
