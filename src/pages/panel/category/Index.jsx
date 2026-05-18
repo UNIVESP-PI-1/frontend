@@ -176,7 +176,12 @@ export default function CategoryIndex() {
                     )}
                 </div>
                 <div className="hidden md:block">
-                    <DataTable columns={columns} data={filteredCategories} loading={loading} />
+                    <DataTable 
+                    columns={columns} 
+                    data={filteredCategories} 
+                    loading={loading} 
+                    itemsPerPage={10}
+                    />
                 </div>
             </div>
 
